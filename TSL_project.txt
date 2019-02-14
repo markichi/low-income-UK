@@ -13,23 +13,23 @@ toc: yes
 toc_depth: 2
 keywords: microeconometrics; policy evaluation; machine learning
 abstract: | 
-|
    
 ---
     
-    ```{r setup, include = TRUE, message = FALSE, warning = FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-
-# Load all packages needed to execute the job
-# If the packages are not installed, write
-# install.packages("<name of package>")
-
-library(ggplot2)   # plot
-library(devtools)  # install from GitHub 
-library(dplyr)     # tables
-library(glmnet)    # lasso
-library(randomForest) # random forests (obviously)
-```
+    
+    ```r
+    knitr::opts_chunk$set(echo = TRUE)
+    
+    # Load all packages needed to execute the job
+    # If the packages are not installed, write
+    # install.packages("<name of package>")
+    
+    library(ggplot2)   # plot
+    library(devtools)  # install from GitHub 
+    library(dplyr)     # tables
+    library(glmnet)    # lasso
+    library(randomForest) # random forests (obviously)
+    ```
 
 # Introduction and economic setup
 
@@ -42,7 +42,8 @@ library(randomForest) # random forests (obviously)
 
 Below, we load the data as a .csv file, rename the response and the treatment variable to $Y$ and $W$, respectively, and extract the relevant covariates outlined above. Then, we standardize the continuous covariates to have zero mean and unit variance and omit observations with _NA_ entries.
 
-```{r, message=FALSE, include=TRUE}
+
+```r
 # Clear any existing variables
 rm(list = ls())
 
@@ -53,34 +54,68 @@ set.seed(1995)
 data_raw <- read.csv('/Users/Markichi/Documents/PhDECON/TSL/data/FRS_2017_16.csv')
 
 # These are the covariates we'll use
-cts_variables_names <- c("")
-binary_variables_names <- c("")
+cts_variables_names <- c("yob")
+binary_variables_names <- c("sex")
 covariates <- c(cts_variables_names, binary_variables_names)
 all_variables_names <- c(covariates)
 
 # Selecting only desired covariates
 data_subset <- data_raw %>%
     dplyr::select(all_variables_names)
+```
 
+```
+## Error: Unknown columns `yob` and `sex`
+```
+
+```r
 # Extracting and scaling continuous variables
 scaled_cts_covariates <- data_subset %>%
     dplyr::select(cts_variables_names) %>%
     scale()
+```
 
+```
+## Error in eval(lhs, parent, parent): object 'data_subset' not found
+```
+
+```r
 # Extracting indicator variables
 binary_covariates <- data_subset %>%
     dplyr::select(binary_variables_names)
+```
 
+```
+## Error in eval(lhs, parent, parent): object 'data_subset' not found
+```
+
+```r
 # Extracting outcome and treatment
 outcome <- data_subset %>% dplyr::select(outcome_voted)
-treatment <- data_subset %>% dplyr::select(treat_neighbors)
+```
 
+```
+## Error in eval(lhs, parent, parent): object 'data_subset' not found
+```
+
+```r
+treatment <- data_subset %>% dplyr::select(treat_neighbors)
+```
+
+```
+## Error in eval(lhs, parent, parent): object 'data_subset' not found
+```
+
+```r
 # Setting up the data, renaming columns and discarding rows with NA (if any)
 df <- data.frame(scaled_cts_covariates, binary_covariates, outcome, treatment) %>%
     plyr::rename(c(treat_neighbors = "W",
                    outcome_voted = "Y")) %>%
     na.omit()
+```
 
+```
+## Error in data.frame(scaled_cts_covariates, binary_covariates, outcome, : object 'scaled_cts_covariates' not found
 ```
 
 ---
